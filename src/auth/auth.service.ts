@@ -46,20 +46,20 @@ export class AuthService {
     if (!pwMatches) throw new ForbiddenException('Credential incorrect');
 
     delete user.hash;
-    return user;
+    return this.signToken(user.id, user.email);
   }
 
   async signToken(
     userId: number,
     email: string,
-  ): Promise<{ access_token: Promise<string> }> {
+  ): Promise<{ access_token: string }> {
     const payload = {
       sub: userId,
       email,
     };
-    const secret = await this.config.get('JWT_SECRET');
-    const signedToken = this.jwt.signAsync(payload, {
-      expiresIn: '15mn',
+    const secret = this.config.get('JWT_SECRET');
+    const signedToken = await this.jwt.signAsync(payload, {
+      expiresIn: '15m',
       secret,
     });
     return { access_token: signedToken };
