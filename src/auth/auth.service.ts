@@ -50,18 +50,27 @@ export class AuthService {
   }
 
   async signToken(
-    userId: number,
+    userId: string,
     email: string,
-  ): Promise<{ access_token: string }> {
+  ): Promise<{ access_token: string; refresh_token: string }> {
     const payload = {
       sub: userId,
       email,
     };
-    const secret = this.config.get('JWT_SECRET');
-    const signedToken = await this.jwt.signAsync(payload, {
-      expiresIn: '15m',
-      secret,
-    });
-    return { access_token: signedToken };
+    const [at, rt] = await Promise.all([
+      this.jwt.signAsync(payload, {
+        expiresIn: '15m',
+        secret: this.config.get<string>('AT_SECRET'),
+      }),
+      this.jwt.signAsync(payload, {
+        expiresIn: '7d',
+        secret: this.config.get<string>('RT_SECRET'),
+      }),
+    ]);
+    return {
+      access_token: at,
+      refresh_token: rt,
+    };
   }
+
 }

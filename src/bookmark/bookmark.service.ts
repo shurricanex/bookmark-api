@@ -6,7 +6,7 @@ import { EditBookmarkDto } from './dto/edit-bookmark.dto';
 @Injectable()
 export class BookmarkService {
   constructor(private prisma: PrismaService) {}
-  getBookmarks(userId: number) {
+  getBookmarks(userId: string) {
     const boomarks = this.prisma.bookmark.findMany({
       where: {
         userId,
@@ -15,7 +15,7 @@ export class BookmarkService {
     return boomarks;
   }
 
-  getBookmarkById(userId: number, bookmarkId: number) {
+  getBookmarkById(userId: string, bookmarkId: string) {
     const bookmark = this.prisma.bookmark.findFirst({
       where: {
         id: bookmarkId,
@@ -25,7 +25,7 @@ export class BookmarkService {
     return bookmark;
   }
 
-  createBookmark(userId: number, dto: BookmarkDto) {
+  createBookmark(userId: string, dto: BookmarkDto) {
     const bookmark = this.prisma.bookmark.create({
       data: {
         userId,
@@ -36,8 +36,8 @@ export class BookmarkService {
   }
 
   async updateBookmark(
-    userId: number,
-    bookmarkId: number,
+    userId: string,
+    bookmarkId: string,
     dto: EditBookmarkDto,
   ) {
     const bookmark = await this.prisma.bookmark.findUnique({
@@ -60,7 +60,7 @@ export class BookmarkService {
     });
   }
 
-  async deleteBookmarkById(userId: number, bookmarkId: number) {
+  async deleteBookmarkById(userId: string, bookmarkId: string) {
     const bookmark = await this.prisma.bookmark.findUnique({
       where: {
         id: bookmarkId,
