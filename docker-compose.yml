@@ -1,19 +1,24 @@
 version: '3.8'
 services: 
-  dev-db:
-    image: postgres:13
+  bookmark-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bookmark-api 
+    restart: always
     ports:
-      - 5434:5432
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123
-      POSTGRES_DB: nest
+      - 3000:3000
+    depends_on:
+      - dev-db
+    env_file:
+      - .env
     networks:
       - freecodecamp
-  test-db:
+  dev-db:
     image: postgres:13
+    container_name: postgresprisma
     ports:
-      - 5435:5432
+      - 5432:5432
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
